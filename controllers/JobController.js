@@ -1,0 +1,36 @@
+import Job from '../models/Job.js'
+export const getJobs=async(req,res)=>{
+    try
+    {
+       const jobs=await Job.find({visible:true})
+       .populate({path:'companyId',select:'-password'})
+res.json({success:true,jobs})
+    }
+    catch(error)
+    {
+        res.json({success:false, message:error.message})
+    }
+}
+// Get a single joob by Id
+
+export const getJobById=async(req,res)=>
+{
+    try
+    {
+        const id=req.params.id;
+        const job= await Job.findById(id).populate(
+            {
+                path:'companyId', select:'-password'
+            }
+        )
+        if(!job)
+        {
+            return res.json({success:false, message:"Job is  not found"})
+        }
+        res.json({success:true, job})
+    }
+    catch(err)
+    {
+       res.json({success:false, message:err.message})
+    }
+}
